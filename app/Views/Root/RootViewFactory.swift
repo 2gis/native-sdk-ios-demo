@@ -34,6 +34,8 @@ struct RootViewFactory {
 				self.makeVisibleAreaDetectionDemoPage()
 			case .mapTheme:
 				self.makeMapThemeDemoPage()
+			case .customGestures:
+				self.makeCustomGesturesDemoPage()
 		}
 	}
 
@@ -135,6 +137,15 @@ struct RootViewFactory {
 		return MapThemeDemoView(
 			viewModel: viewModel,
 			viewFactory: self.makeDemoPageComponentsFactory(mapFactory: self.makeMapFactory())
+		)
+	}
+
+	private func makeCustomGesturesDemoPage() -> some View {
+		let mapFactory = self.makeMapFactory()
+		let viewModel = CustomGesturesDemoViewModel(mapGesturesType: .custom)
+		return CustomGesturesDemoView(
+			viewModel: viewModel,
+			viewFactory: self.makeDemoPageComponentsFactory(mapFactory: mapFactory)
 		)
 	}
 
