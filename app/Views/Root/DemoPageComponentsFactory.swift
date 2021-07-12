@@ -13,19 +13,42 @@ struct DemoPageComponentsFactory {
 		self.mapFactory = mapFactory
 	}
 
-	func makeMapView(appearance: MapAppearance? = nil) -> MapView {
-		MapView(appearance: appearance, mapUIViewFactory: { [mapFactory = self.mapFactory] in
-			mapFactory.mapView
-		})
+	func makeMapView(
+		appearance: MapAppearance? = nil,
+		mapGesturesType: MapGesturesType? = nil
+	) -> MapView {
+		MapView(
+			appearance: appearance,
+			mapGesturesType: mapGesturesType,
+			mapUIViewFactory: { [mapFactory = self.mapFactory] in
+				mapFactory.mapView
+			},
+			mapGestureViewFactory: { [mapFactory = self.mapFactory] type in
+				let factory: IMapGestureViewFactory?
+				switch type {
+					case .default:
+						factory = MapOptions.default.gestureViewFactory
+					case .custom:
+						factory = CustomGestureViewFactory()
+				}
+				return factory?.makeGestureView(
+					map: mapFactory.map,
+					eventProcessor: mapFactory.mapEventProcessor,
+					coordinateSpace: mapFactory.mapCoordinateSpace
+				)
+			}
+		)
 	}
 
 	func makeMapViewWithZoomControl(
+		appearance: MapAppearance? = nil,
 		alignment: CopyrightAlignment = .bottomRight,
+		mapGesturesType: MapGesturesType? = nil,
 		mapCoordinateSpace: String = "map",
 		touchUpHandler: ((CGPoint) -> Void)? = nil
 	) -> some View {
 		ZStack {
-			self.makeMapView()
+			self.makeMapView(appearance: appearance, mapGesturesType: mapGesturesType)
 				.copyrightAlignment(alignment)
 				.coordinateSpace(name: mapCoordinateSpace)
 				.touchUpRecognizer(coordinateSpace: .named(mapCoordinateSpace), handler: { location in

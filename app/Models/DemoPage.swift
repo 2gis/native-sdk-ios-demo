@@ -7,6 +7,7 @@ enum DemoPage: String, CaseIterable {
 	case mapStyles
 	case mapTheme
 	case dictionarySearch
+	case customGestures
 
 	var name: String {
 		switch self {
@@ -26,6 +27,8 @@ enum DemoPage: String, CaseIterable {
 				return "Поиск в справочнике"
 			case .visibleAreaDetection:
 				return "Определение выхода из области"
+			case .customGestures:
+				return "Пользовательские жесты управления картой"
 		}
 	}
 }
